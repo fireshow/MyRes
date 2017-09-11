@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+<!-- 把Struts的action交给spring托管 -->
+    <constant name="struts.objectFactory" value="spring"/>
+    <!--  设置struts为开发模式，这样能够及时的响应修改  不过没有搞懂是什么意思-->
+    <constant name="struts.devMode" value="false"/>
+    <constant name="struts.il8n.encoding" value="UTF-8"></constant>
+    <!--设置上传文件大小 （20MB）-->
+    <constant name="struts.multipart.maxSize" value="2097152"></constant>
+    <!--    定位视图资源的根路径 -->
+    <!--    <constant name="struts.convention.result.path" value="/WEB-INF/"></constant> -->
+    <!--设置struts配置文件修改以后系统是否自动重新加载该文件默认为false但是在开发环境下还是要设置成true-->
+    <constant name="struts.configuration.xml.reload" value="true"></constant>
+<!--************************************************************************************************************ -->
+
+ <package name="pa" namespace="/" extends="struts-default">
+        <action name="logins" class="loginAction" method="Check">
+            <result name="success">/index.jsp</result>
+            <result name="error">/Login.jsp</result>
+        </action>
+        <action name="testjson" class="testPhoneAction" method="test">
+               <result>main.html</result>
+        </action>
+    </package>
+    
+    
+    
+    <package name="pb" namespace="/" extends="struts-default">
+    
+<!--   添加学生 -->
+         <action name="instu" class="loginAction" method="InputStudent">
+         <result name="success">/Student/InputJG.jsp</result>
+        </action>
+        
+          <action name="instuOfCla" class="banjiAction" method="ShowClass">
+         <result name="success">/AddStudent.jsp</result>
+        </action>
+        
+<!--         显示个人信息 -->
+        <action name="showpmessage" class="loginAction"  method="Showperson">
+        <result>/MyMessage.jsp</result>
+        </action>
+        
+<!--         添加班级信息 -->
+         <action name="inclas" class="banjiAction"  method="AddCl">
+         <result>/AddClasses.jsp</result>
+        </action>
+        
+        
+<!--         显示所有学生信息 -->
+         <action name="showstudents" class="studentAction"  method="FindAllStudent">
+        <result>/StudentShow.jsp</result>
+        </action>
+<!--         显示选择的学生信息 -->
+        <action name="showpers" class="studentAction"  method="FindStById">
+        <result>/Student/StudentMessage.jsp</result>
+        </action>
+ <!--         显示所有班级 -->
+         <action name="showCls" class="banjiAction" method="ShowClass">
+            <result name="success">/ClassesShow.jsp</result>
+        </action>
+        
+         <action name="AjaxShowCls"  class="banjiAction"  method="FindClass">
+            <result name="success">/AddStudent.jsp</result>
+        </action>
+        
+ <!--         删除指定班级 -->
+            <action name="delclass" class="banjiAction" method="DelClass">
+            <result name="success">/ClassesShow.jsp</result>
+            </action>
+<!--       删除指定学生 -->
+            <action name="delStudent" class="studentAction" method="DelStudent">
+            <result name="success">/StudentShow.jsp</result>
+            </action>
+        </package>
+    
+    <package name="Course" namespace="/" extends="struts-default">
+             <!--     添加课程 -->
+		    <action name="AddCourse" class="courseAction" method="AddCourse">
+		          <result>/AddCourse.jsp</result>
+		    </action>
+            <!-- 		    查询全部课程 -->
+              <action name="FindAllCourse" class="courseAction" method="FindAllCourse">
+                  <result>/CourseShow.jsp</result>
+             </action>
+                <!--    修改课程信息 -->
+               <action name="ChangeCourse" class="courseAction" method="UpdateCourse">
+                  <result>/CourseShowOne.jsp</result>
+             </action>
+             <action name="UpdateCourse" class="courseAction" method="Update">
+                  <result>/CourseShow.jsp</result>
+             </action>
+                <!--            删除课程 -->
+                <action name="DelCourse" class="courseAction" method="DelCourse">
+                  <result>/CourseShow.jsp</result>
+             </action>
+    </package>
+    
+    <package name="Scor" namespace="/" extends="struts-default">
+        <!--             添加 分数 -->
+            <action name="AddScor" class="scorAction" method="AddScor">
+            <result>/AddScor.jsp</result>
+            </action>
+        <!--             添加分数之前吧数据查出来 -->
+            <action name="FindStudentAndKc" class="scorAction" method="FindStudentAndKc">
+            <result>/AddScor.jsp</result>
+            </action>
+           <!--             显示分数之前把分数班级学生查出来 -->
+             <action name="FindStudentAndClassesAndScor" class="scorAction" method="FindStudentAndKc">
+            <result>/ScorShow.jsp</result>
+            </action>
+          <!--    删除 -->
+             <action name="delScor" class="scorAction" method="DelScor">
+            <result>/ScorShow.jsp</result>
+            </action>
+        <!--     修改分数 -->
+         <action name= "ChangeScor"  class="scorAction"  method="ChangeScor">
+              <result>/ScorShow.jsp</result>
+           </action>
+      <action name="TjScorBySid" class="scorAction" method="TjScorBySid">
+        <result>/StudentScor.jsp</result>
+      </action>
+    </package>
+    
+<!--    默认出错页面  -->
+    <package name="default-package" extends="struts-default">
+        <global-results>
+            <result name="error">/error.jsp</result>
+        </global-results>
+<!-- 全球流 -->
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.NullPointerException"
+                result="error" />
+            <exception-mapping exception="java.lang.Exception"
+                result="error" />
+        </global-exception-mappings>
+    </package>
+</struts>    

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx.xsd ">
+   <context:annotation-config /> 
+    <context:component-scan base-package="com.swz" >
+    </context:component-scan>
+    <aop:aspectj-autoproxy proxy-target-class = "true"/>
+
+
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="url"
+			value="jdbc:mysql://127.0.0.1:3306/banjims">
+		</property>
+		<property name="username" value="20142894"></property>
+		<property name="password" value="123456"></property>
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.swz.entity.Student</value>
+				<value>com.swz.entity.Scor</value>
+				<value>com.swz.entity.Kc</value>
+				<value>com.swz.entity.Classes</value></list>
+		</property></bean>
+	<bean id="studentDAO" class="com.swz.dao.StudentDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="scorDAO" class="com.swz.dao.ScorDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="kcDAO" class="com.swz.dao.KcDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="classesDAO" class="com.swz.dao.ClassesDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	  <bean id="TxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"> 
+        <property name="sessionFactory" ref="sessionFactory" />
+         </bean>
+	
+	 <tx:advice id="txAdvice" transaction-manager="TxManager">
+       <tx:attributes>
+           <tx:method name="save*" propagation="REQUIRED"/>
+           <tx:method name="delete*" propagation="REQUIRED"/>
+           <tx:method name="update*" propagation="REQUIRED"/>
+           <tx:method name="find*" propagation="REQUIRES_NEW"
+            timeout="30" rollback-for="java.sql.SQLException,java.io.IOException"/>
+       </tx:attributes>
+   </tx:advice>
+   <aop:config>
+       <aop:pointcut id="allServiceMethod"  expression=" execution ( public * com.swz.dao.*.*(..))"/>
+       <aop:advisor pointcut-ref="allServiceMethod" advice-ref="txAdvice"/>
+   </aop:config>
+
+   <bean id="KcDAO" class="com.swz.dao.KcDAO">
+   	<property name="sessionFactory">
+   		<ref bean="sessionFactory" />
+   	</property>
+   </bean></beans>
